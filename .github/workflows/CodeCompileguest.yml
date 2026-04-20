@@ -1,4 +1,4 @@
-name: CodeQL Analysis
+name: CodeQL
 
 on:
   push:
@@ -9,19 +9,23 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: macos-latest
-    
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: cpp
-    
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
-    
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up CodeQL
+        uses: github/codeql-action/setup@v1
+        with:
+          languages: swift
+          autobuild: true
+
+      - name: Auto-update  CodeQL database
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Run CodeQL analysis
+        uses: github/codeql-action/analyze@v1
+        with:
+          category: "test"
+          output: "results.sarif"
+          mode: "results"
