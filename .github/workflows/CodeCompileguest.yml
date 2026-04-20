@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v3
     
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: xcodebuild
         build-mode: manual
@@ -26,4 +26,4 @@ jobs:
         xcodebuild build -scheme YourScheme -configuration Release
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
