@@ -19,10 +19,9 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: cpp
-        build-mode: manual
     
-    - name: Build with Make
-      run: make -j$(sysctl -n hw.ncpu) dsym package
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
     
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
