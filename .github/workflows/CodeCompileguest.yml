@@ -1,0 +1,29 @@
+name: CodeQL Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: cpp
+        build-mode: manual
+    
+    - name: Build (Manual Steps)
+      run: |
+        xcodebuild build -scheme YourScheme -configuration Release
+    
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
