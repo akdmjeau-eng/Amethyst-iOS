@@ -1,0 +1,17 @@
+- name: Run manual build steps
+      if: matrix.build-mode == 'manual'
+      run: |
+        echo "Iniciando compilación manual Nexus para Amethyst-iOS..."
+        
+        # 1. Si usas CocoaPods (descomenta si es necesario)
+        # pod install
+
+        # 2. Compilación limpia dirigida al simulador (evita errores de firma)
+        xcodebuild build \
+          -project Amethyst-iOS.xcodeproj \
+          -scheme Amethyst-iOS \
+          -configuration Debug \
+          -destination 'generic/platform=iOS Simulator' \
+          CODE_SIGNING_ALLOWED=NO \
+          CODE_SIGNING_REQUIRED=NO \
+          COMPILER_INDEX_STORE_ENABLE=NO
