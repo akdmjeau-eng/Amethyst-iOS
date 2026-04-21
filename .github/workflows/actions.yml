@@ -1,0 +1,49 @@
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    # Nexus Core: Forzamos el runner de macOS para C++ y Swift
+    runs-on: ${{ (matrix.language == 'c-cpp' || matrix.language == 'swift') && 'macos-latest' || 'ubuntu-latest' }}
+    
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: c-cpp
+          build-mode: manual  # <--- Activamos el control manual
+        - language: actions
+          build-mode: none
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+
+    # PASO CRÍTICO: Compilación manual para iOS
+    - name: Run manual build steps
+      if: matrix.build-mode == 'manual'
+      run: |
+        echo "Iniciando secuencia de build manual Nexus..."
+        xcodebuild -project Amethyst-iOS.xcodeproj \
+                   -scheme Amethyst-iOS \
+                   -configuration Debug \
+                   -destination 'generic/platform=iOS Simulator' \
+                   -sdk iphonesimulator \
+                   CODE_SIGNING_ALLOWED=NO \
+                   CODE_SIGNING_REQUIRED=NO \
+                   clean build
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4
+      with:
+        category: "/language:${{matrix.language}}"
